@@ -12,5 +12,5 @@ public sealed class ProductEntity
 
   public string? Description { get; set; }
 
-  public ulong Price { get; set; }
+  public required ulong Price { get; set; }
 }
