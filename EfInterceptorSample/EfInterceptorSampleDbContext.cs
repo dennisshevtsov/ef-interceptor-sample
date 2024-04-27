@@ -12,6 +12,7 @@ public sealed class EfInterceptorSampleDbContext : DbContext
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
     optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ef-interceptor-db;Username=dev;Password=dev");
+    optionsBuilder.AddInterceptors(new SaveProductInterceptor());
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
