@@ -4,15 +4,18 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text;
 
 namespace EfInterceptorSample;
 
-public sealed class EfInterceptorSampleDbContext : DbContext
+public sealed class EfInterceptorSampleDbContext(StringBuilder logger) : DbContext
 {
+  private readonly StringBuilder _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ef-interceptor-db;Username=dev;Password=dev");
-    optionsBuilder.AddInterceptors(new SaveProductInterceptor());
+    optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ef-interceptor-db;Username=dev;Password=dev")
+                  .AddInterceptors(new SaveProductInterceptor(_logger));
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)

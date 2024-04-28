@@ -3,14 +3,17 @@
 // See LICENSE in the project root for license information.
 
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Text;
 
 namespace EfInterceptorSample;
 
-public sealed class SaveProductInterceptor : SaveChangesInterceptor
+public sealed class SaveProductInterceptor(StringBuilder logger) : SaveChangesInterceptor
 {
-  public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+  private readonly StringBuilder _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+  public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine("Product saved");
-    return result;
+    _logger.AppendLine("Product saved");
+    return base.SavingChangesAsync(eventData, result, cancellationToken);
   }
 }
